@@ -3,3 +3,12 @@ server:
 spring:
   resources:
     static-locations: classpath:static
+  datasource:
+    password: Xz201314..
+    username: sa
+    url: jdbc:h2:~/IOTCommunity
+    driver-class-name: org.h2.Driver
+githubAIP:
+  Client_id: "c031f623a15031c6a352"
+  Client_secret: "7d60deec729cb48b11dbda62def75ced6031e52b"
+  Redirect_uri: "http://localhost:8088/callback"
