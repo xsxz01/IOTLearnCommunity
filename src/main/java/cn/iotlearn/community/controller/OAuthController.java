@@ -6,6 +6,7 @@ import cn.iotlearn.community.dto.GithubUserDTO;
 import cn.iotlearn.community.mapper.UserMapper;
 import cn.iotlearn.community.model.User;
 import com.alibaba.fastjson.JSON;
+import com.sun.deploy.net.HttpResponse;
 import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,7 +14,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.UUID;
 
@@ -32,7 +35,8 @@ public class OAuthController {
     @GetMapping("callback")
     public String Callback(@RequestParam(name = "code") String code,
                            @RequestParam(name = "state") String state,
-                           HttpServletRequest request
+                           HttpServletRequest request,
+                           HttpServletResponse response
     ) throws IOException {
         AccessTokenDTO accessTokenDTO = new AccessTokenDTO();
         accessTokenDTO.setCode(code);
@@ -44,16 +48,21 @@ public class OAuthController {
         GithubUserDTO githubUser = githubProvider.getGithubUserDTO(accessToken);
         System.out.println(githubUser.getName());
         try {
-            // 登陆成功
-            // 把user放在session
-            User user = new User();
-            user.setToken(UUID.randomUUID().toString());
-            user.setName(githubUser.getName());
-            user.setAccountId(String.valueOf(githubUser.getId()));
-            user.setGmtCreate(System.currentTimeMillis());
-            user.setGmtModified(user.getGmtCreate());
-            userMapper.insertUser(user);
-            request.getSession().setAttribute("user",githubUser);
+            if (githubUser.getName() != null){
+                // 登陆成功
+                // 把user放在session
+                User user = new User();
+                String token = UUID.randomUUID().toString();
+                user.setToken(token);
+                user.setName(githubUser.getName());
+                user.setAccountId(String.valueOf(githubUser.getId()));
+                user.setGmtCreate(System.currentTimeMillis());
+                user.setGmtModified(user.getGmtCreate());
+                userMapper.insertUser(user);
+                Cookie cookie = new Cookie("token",token);
+                response.addCookie(cookie);
+            }
+//            request.getSession().setAttribute("user",githubUser);
             return "redirect:/";
         }catch (Exception ignored){
             System.out.println(ignored.getMessage());

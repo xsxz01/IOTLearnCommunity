@@ -18,7 +18,7 @@
                     data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
                 <span class="sr-only">Toggle navigation</span>
             </button>
-            <a class="navbar-brand" href="#">IOT学习社区</a>
+            <a class="navbar-brand" href="#">发布 - IOT学习社区</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -48,5 +48,39 @@
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
 </nav>
+<!--    流式布局-->
+<div class="container-fluid main">
+    <div class="alert alert-danger col-lg-12 col-md-12 col-sm-12 col-xs-12" role="alert" th:if="${error != null}"
+         th:text="${error.toString()}"></div>
+    <div class="row">
+        <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+            <h2><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>发起</h2>
+            <hr>
+            <form action="/publish" method="post">
+                <div class="form-group">
+                    <label for="title">问题标题（简单扼要）：</label>
+                    <input type="text" class="form-control" id="title" name="title" placeholder="问题标题……"
+                           th:value="${ title }" />
+                </div>
+                <div class="form-group">
+                    <label for="description">问题补充（必填，请参照右侧提示）：</label>
+                    <textarea name="description" class="form-control" id="description" cols="30" rows="10"
+                              th:value="${ description }"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="tag">添加标签：</label>
+                    <input type="text" class="form-control" id="tag" name="tag" placeholder="输入标签，以，分割"
+                           th:value="${ tag }" />
+                </div>
+                <button type="submit" class="btn btn-success btn-right">发布</button>
+            </form>
+        </div>
+        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+            <h3>问题发起指南</h3>
+        </div>
+    </div>
+</div>
+
+<link rel="stylesheet" href="css/Community.css">
 </body>
 </html>
