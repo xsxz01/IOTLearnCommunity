@@ -1,15 +1,14 @@
-body{
-    background-color: #efefef;
-}
+body{ background-color: #efefef; }
 .main{
     margin: 30px;
     background-color: white;
     border-radius: 10px;
     box-shadow: 5px 10px 10px 5px rgba(0,0,0,0.5), -10px 10px 10px 10px rgba(255,255,255,0.5);
     padding-bottom:20px;
+    min-height: 800px;
 }
-.btn-right{
-    float: right;
-    height: 4rem;
-    width: 8rem;
-}
+.btn-right{ float: right; height: 4rem; width: 8rem; }
+.avatar-publisher{ width: 55px; height: 55px; }
+.media-body p{ font-size: 12px; font-weight: normal; color: #999; }
+.media-body h4{ font-weight: bold; }
+.icon-homepage{ margin: 10px; }

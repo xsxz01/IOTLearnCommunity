@@ -14,11 +14,11 @@
     <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                <span class="sr-only">Toggle navigation</span>
-            </button>
-            <a class="navbar-brand" href="#">IOT学习社区</a>
+<!--            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"-->
+<!--                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">-->
+<!--                <span class="sr-only">Toggle navigation</span>-->
+<!--            </button>-->
+            <a class="navbar-brand" href="/">IOT学习社区</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -36,6 +36,8 @@
                 <li class="dropdown" th:if="${session.user != null}">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                        aria-expanded="false" th:text="'你好，'+ ${session.user.getName()}"></a>
+<!--                    <img class="img-circle img-responsive" th:src="${session.user.getAvatar_url()}"-->
+<!--                         th:alt="${session.user.getName()}">-->
 <!--                    <span class="caret"></span>-->
                     <ul class="dropdown-menu">
                         <li><a href="/publish">发布问题</a></li>
@@ -48,5 +50,39 @@
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
 </nav>
+<!--<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" >-->
+<!--    <h3>分类</h3>-->
+<!--</div>-->
+<div class="container-fluid main">
+    <div class="row">
+        <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+            <h1><span class="glyphicon glyphicon-list icon-homepage" aria-hidden="true"></span>发现</h1>
+            <hr>
+            <div class="media" th:each="news : ${ questions }">
+                <div class="media-left">
+                    <a href="#">
+                        <img class="media-object avatar-publisher img-rounded"
+                             th:src="${news.user.avatarUrl}">
+                    </a>
+                </div>
+                <div class="media-body">
+                    <h4 class="media-heading" th:text="${news.getTitle()}"></h4>
+                    <span th:text="${news.getDescription()}"></span>
+                    <p><span th:text="${news.getCommentCount()}"></span>个回复
+                        · <span th:text="${news.getViewCount()}"></span>次预览
+                        · <span th:text="${#dates.format(news.getGmtCreate())}"></span>
+<!--                        · <span th:text="${}"></span>-->
+                    </p>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+            <h3>热门话题</h3>
+        </div>
+    </div>
+</div>
+
+<link rel="stylesheet" href="css/Community.css">
 </body>
 </html>

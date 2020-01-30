@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>IOT学习社区</title>
+    <title>发布 - IOT学习社区</title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/bootstrap-theme.min.css">
     <script src="js/jquery-3.4.1.min.js"></script>
@@ -14,11 +14,11 @@
     <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                <span class="sr-only">Toggle navigation</span>
-            </button>
-            <a class="navbar-brand" href="#">发布 - IOT学习社区</a>
+<!--            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"-->
+<!--                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">-->
+<!--                <span class="sr-only">Toggle navigation</span>-->
+<!--            </button>-->
+            <a class="navbar-brand" href="/">IOT学习社区</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -65,7 +65,7 @@
                 <div class="form-group">
                     <label for="description">问题补充（必填，请参照右侧提示）：</label>
                     <textarea name="description" class="form-control" id="description" cols="30" rows="10"
-                              th:value="${ description }"></textarea>
+                              th:text="${ description }"></textarea>
                 </div>
                 <div class="form-group">
                     <label for="tag">添加标签：</label>

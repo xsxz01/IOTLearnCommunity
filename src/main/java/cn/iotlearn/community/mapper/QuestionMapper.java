@@ -3,6 +3,9 @@ package cn.iotlearn.community.mapper;
 import cn.iotlearn.community.model.Question;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 @Mapper
 public interface QuestionMapper {
@@ -11,4 +14,6 @@ public interface QuestionMapper {
             "#{viewCount}," +
             "#{gmtModified},#{gmtCreate})")
     void insert(Question question);
+    @Select("select * from question order by gmt_modified desc")
+    List<Question> listAll();
 }
