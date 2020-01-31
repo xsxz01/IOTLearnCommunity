@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>IOT学习社区</title>
+    <title>个人中心 - IOT学习社区</title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/bootstrap-theme.min.css">
     <script src="js/jquery-3.4.1.min.js"></script>
@@ -32,11 +32,11 @@
                     <p><span th:text="${news.getCommentCount()}"></span>个回复
                         · <span th:text="${news.getViewCount()}"></span>次预览
                         · <span th:text="${#dates.format(news.getGmtCreate())}"></span>
-<!--                        · <span th:text="${}"></span>-->
+                        <!--                        · <span th:text="${}"></span>-->
                     </p>
                 </div>
             </div>
-<!--            分页组件-->
+            <!--            分页组件-->
             <nav aria-label="Page navigation">
                 <ul class="pagination">
                     <li th:if="${questionDTOList.showFirst}">

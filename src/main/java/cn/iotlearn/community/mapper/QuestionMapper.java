@@ -3,6 +3,7 @@ package cn.iotlearn.community.mapper;
 import cn.iotlearn.community.model.Question;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
@@ -14,6 +15,13 @@ public interface QuestionMapper {
             "#{viewCount}," +
             "#{gmtModified},#{gmtCreate})")
     void insert(Question question);
+
     @Select("select * from question order by gmt_modified desc")
     List<Question> listAll();
+
+    @Select("select * from question order by gmt_modified desc limit #{offset},#{size}")
+    List<Question> listByPage(@Param("offset")Integer offset, @Param("size")Integer size);
+
+    @Select("select count(id) from question")
+    Integer count();
 }
