@@ -12,3 +12,8 @@ body{ background-color: #efefef; }
 .media-body p{ font-size: 12px; font-weight: normal; color: #999; }
 .media-body h4{ font-weight: bold; }
 .icon-homepage{ margin: 10px; }
+/*对菜单列表的修饰*/
+.list-group{border-width: 0;margin-top: 15px;border-radius: 9px;}
+.list-group>a{ border-radius: 9px;border-width: 0; }
+.list-group-item.active{ background-image: none;background-color: lightgray;border-radius: 9px;border-width: 0;color: gray; }
+.list-group-item.active:hover{ background-image: none;background-color: lightblue;border-radius: 9px;border-width: 0;color: gray; }
