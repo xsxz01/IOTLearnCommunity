@@ -14,7 +14,7 @@ public interface UserMapper {
             "#{token},#{gmtCreate},#{gmtModified},#{avatarUrl})")
     void insertUser(User user);
     @Select("select * from User where token = #{token}")
-    GithubUserDTO findByToken(@Param("token")String token);
-    @Select("select * from User where id = #{id}")
+    User findByToken(@Param("token")String token);
+    @Select("select * from User where account_id =#{id} order by GMT_CREATE desc limit 0,1")
     User findById(@Param("id")Integer creator);
 }

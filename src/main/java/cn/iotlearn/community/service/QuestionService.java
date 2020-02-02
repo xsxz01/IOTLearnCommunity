@@ -45,6 +45,15 @@ public class QuestionService {
         List<Question> questionList = questionMapper.listByPage(offset,iSize);
         return getQuestionDTOS(questionList);
     }
+
+    private List<QuestionDTO> listById(int id, String page, String size) {
+        int iPage = Integer.parseInt(page);
+        int iSize = Integer.parseInt(size);
+        int offset = (iPage-1)*iSize;    //计算出偏移量
+        List<Question> questionList = questionMapper.listByUserId(id,offset,iSize);
+        return getQuestionDTOS(questionList);
+    }
+
     public PaginationDTO listByPages(String page, String size){
         if (Integer.parseInt(page) < 1) page = "1";
         if (Integer.parseInt(page) > questionMapper.count()/Integer.parseInt(size))
@@ -52,6 +61,17 @@ public class QuestionService {
         PaginationDTO paginationDTO = new PaginationDTO();
         Integer totalCount = questionMapper.count();
         paginationDTO.setQuestions(listByPage(page,size));
+        paginationDTO.setPageination(totalCount,page,size);
+        return paginationDTO;
+    }
+
+    public PaginationDTO listByUserId(int id, String page, String size) {
+        if (Integer.parseInt(page) < 1) page = "1";
+        if (Integer.parseInt(page) > questionMapper.count()/Integer.parseInt(size))
+            page = String.valueOf(questionMapper.count()/Integer.parseInt(size));
+        PaginationDTO paginationDTO = new PaginationDTO();
+        Integer totalCount = questionMapper.countByUserId(id);
+        paginationDTO.setQuestions(listById(id, page, size));
         paginationDTO.setPageination(totalCount,page,size);
         return paginationDTO;
     }
