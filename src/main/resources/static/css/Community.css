@@ -17,3 +17,8 @@ body{ background-color: #efefef; }
 .list-group>a{ border-radius: 9px;border-width: 0; }
 .list-group-item.active{ background-image: none;background-color: lightgray;border-radius: 9px;border-width: 0;color: gray; }
 .list-group-item.active:hover{ background-image: none;background-color: lightblue;border-radius: 9px;border-width: 0;color: gray; }
+/*段落样式*/
+p{ font-size: 12px;color: lightgray;
+    font-family: "宋体", serif; }
+.btn-edit{color: #999; border-color: #999999;border-width: 0.5px;border-radius: 5px}
+h4{ margin-top: 15px;margin-left: 15px; }

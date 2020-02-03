@@ -1,5 +1,6 @@
 package cn.iotlearn.community.mapper;
 
+import cn.iotlearn.community.dto.QuestionDTO;
 import cn.iotlearn.community.model.Question;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
@@ -30,4 +31,7 @@ public interface QuestionMapper {
 
     @Select("select * from question where creator = #{id} order by gmt_modified desc limit #{offset},#{size}")
     List<Question> listByUserId(@Param("id")int id, @Param("offset")int offset, @Param("size")int iSize);
+
+    @Select("select * from question where id = #{id}")
+    Question getById(@Param("id")Integer id);
 }
