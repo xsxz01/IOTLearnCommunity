@@ -26,7 +26,11 @@ public class QuestionController {
         model.addAttribute("questionDTO",questionDTO);
         // 判断权限
         User user = (User) request.getSession().getAttribute("user");
-        model.addAttribute("isCreator", user.getAccountId().equals(questionDTO.getUser().getAccountId()));
+        boolean isCreator = false;
+        if (user != null){
+            isCreator = questionDTO.getUser().getAccountId().equals(user.getAccountId());
+        }
+        model.addAttribute("isCreator",isCreator);
         return "question";
     }
 }

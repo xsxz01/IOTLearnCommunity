@@ -1,11 +1,14 @@
 package cn.iotlearn.community.controller;
+import cn.iotlearn.community.dto.QuestionDTO;
 import cn.iotlearn.community.mapper.QuestionMapper;
 import cn.iotlearn.community.model.Question;
 import cn.iotlearn.community.model.User;
+import cn.iotlearn.community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import javax.servlet.http.HttpServletRequest;
@@ -13,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 public class PublishController {
     @Autowired
-    private QuestionMapper questionMapper;
+    private QuestionService questionService;
     @GetMapping("/publish")
     public String publish(){
         return "publish";
@@ -23,6 +26,7 @@ public class PublishController {
             @RequestParam("title") String title,
             @RequestParam("description") String description,
             @RequestParam("tag") String tag,
+            @RequestParam(name = "id",required = false)Integer id,
             HttpServletRequest request,
             Model model
     ){
@@ -53,12 +57,19 @@ public class PublishController {
         question.setDescription(description);
         question.setTag(tag);
         question.setCreator(Integer.parseInt(user.getAccountId()));
-        question.setGmtCreate(System.currentTimeMillis());
-        question.setGmtModified(question.getGmtCreate());
-        question.setLikeCount(0);
-        question.setViewCount(0);
-        question.setCommentCount(0);
-        questionMapper.insert(question);
+        question.setId(id);
+        questionService.createOrUpdate(question);
         return "redirect:/";
     }
+    @GetMapping("/publish/{id}")
+    public String edit(@PathVariable(name = "id")Integer id,
+                       Model model){
+        QuestionDTO questionMapperById = questionService.getById(id);
+        model.addAttribute("title",questionMapperById.getTitle());
+        model.addAttribute("description",questionMapperById.getDescription());
+        model.addAttribute("tag",questionMapperById.getTag());
+        model.addAttribute("id",questionMapperById.getId());
+        return "publish";
+    }
+
 }

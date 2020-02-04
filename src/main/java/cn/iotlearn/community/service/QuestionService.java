@@ -84,4 +84,20 @@ public class QuestionService {
         questionDTO.setUser(userMapperById);
         return questionDTO;
     }
+
+    public void createOrUpdate(Question question) {
+        if (question.getId() == null){
+//            创建
+            question.setLikeCount(0);
+            question.setViewCount(0);
+            question.setCommentCount(0);
+            question.setGmtCreate(System.currentTimeMillis());
+            question.setGmtModified(question.getGmtCreate());
+            questionMapper.insert(question);
+        }else {
+//            更新
+            question.setGmtModified(System.currentTimeMillis());
+            questionMapper.update(question);
+        }
+    }
 }

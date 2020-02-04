@@ -3,11 +3,8 @@ package cn.iotlearn.community.controller;
 import cn.iotlearn.community.Provider.GithubProvider;
 import cn.iotlearn.community.dto.AccessTokenDTO;
 import cn.iotlearn.community.dto.GithubUserDTO;
-import cn.iotlearn.community.mapper.UserMapper;
 import cn.iotlearn.community.model.User;
-import com.alibaba.fastjson.JSON;
-import com.sun.deploy.net.HttpResponse;
-import org.omg.Messaging.SYNC_WITH_TRANSPORT;
+import cn.iotlearn.community.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -29,7 +26,7 @@ public class OAuthController {
     @Value("${githubAIP.Client_secret}")
     private String Client_secret;
     @Autowired
-    private UserMapper userMapper;
+    private UserService userService;
     @Autowired
     private GithubProvider githubProvider;
     @GetMapping("callback")
@@ -56,10 +53,9 @@ public class OAuthController {
                 user.setToken(token);
                 user.setName(githubUser.getName());
                 user.setAccountId(String.valueOf(githubUser.getId()));
-                user.setGmtCreate(System.currentTimeMillis());
-                user.setGmtModified(user.getGmtCreate());
+
                 user.setAvatarUrl(githubUser.getAvatar_url());
-                userMapper.insertUser(user);
+                userService.createOrUpdate(user);
                 Cookie cookie = new Cookie("token",token);
                 response.addCookie(cookie);
             }
@@ -70,5 +66,18 @@ public class OAuthController {
             System.out.println(ignored.getCause());
             return "redirect:/";
         }
+    }
+    @GetMapping("logout")
+    public String logout(
+            HttpServletRequest request,
+            HttpServletResponse response
+    ){
+//        删除session
+        request.getSession().removeAttribute("user");
+//        删除cookies
+        Cookie cookie = new Cookie("token",null);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+        return "redirect:/";
     }
 }
