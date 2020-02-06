@@ -1,6 +1,5 @@
 package cn.iotlearn.community.controller;
 import cn.iotlearn.community.dto.QuestionDTO;
-import cn.iotlearn.community.mapper.QuestionMapper;
 import cn.iotlearn.community.model.Question;
 import cn.iotlearn.community.model.User;
 import cn.iotlearn.community.service.QuestionService;
@@ -11,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
@@ -56,7 +56,7 @@ public class PublishController {
         question.setTitle(title);
         question.setDescription(description);
         question.setTag(tag);
-        question.setCreator(Integer.parseInt(user.getAccountId()));
+        question.setCreator(user.getId());
         question.setId(id);
         questionService.createOrUpdate(question);
         return "redirect:/";

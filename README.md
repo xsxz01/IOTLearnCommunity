@@ -1,4 +1,7 @@
 # 我的IOT社区论坛项目(本项目仅作为学习用途）
+## 2020年2月6日
+> 添加代码生成器，数据库操作的代码再也不手写啦  
+> 修复相关的依赖，以及新出的bug
 ## 2020年2月4日
 > 重新修复登录的问题，这次用户不会重复了  
 > 添加文章的更新功能
@@ -35,3 +38,7 @@
 [OKHttp文档](https://square.github.io/okhttp/)
 ### 工具 
 idea2019
+### 部分命令
+###### 代码生成
+> mvn -Dmybatis.generator.overwrite=true mybatis-generator:generate  
+>

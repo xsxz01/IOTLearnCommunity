@@ -2,8 +2,11 @@ package cn.iotlearn.community.service;
 
 import cn.iotlearn.community.mapper.UserMapper;
 import cn.iotlearn.community.model.User;
+import cn.iotlearn.community.model.UserExample;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class UserService {
@@ -11,19 +14,27 @@ public class UserService {
     private UserMapper userMapper;
 
     public void createOrUpdate(User user) {
-        User userById = userMapper.findById(Integer.parseInt(user.getAccountId()));
-        if (userById == null){
+        UserExample userExample = new UserExample();
+        userExample.createCriteria()
+                .andAccountIdEqualTo(user.getAccountId());
+        List<User> userById = userMapper.selectByExample(userExample);
+        if (userById.size() == 0){
             // 插入新用户
             user.setGmtCreate(System.currentTimeMillis());
             user.setGmtModified(user.getGmtCreate());
-            userMapper.insertUser(user);
+            userMapper.insert(user);
         }else {
             // 更新
-            userById.setGmtModified(System.currentTimeMillis());
-            userById.setAvatarUrl(user.getAvatarUrl());
-            userById.setName(user.getName());
-            userById.setToken(user.getToken());
-            userMapper.updateUser(userById);
+            user = userById.get(0);
+            User updateUser = new User();
+            updateUser.setGmtModified(System.currentTimeMillis());
+            updateUser.setAvatarUrl(user.getAvatarUrl());
+            updateUser.setName(user.getName());
+            updateUser.setToken(user.getToken());
+            UserExample example = new UserExample();
+            example.createCriteria()
+                    .andIdEqualTo(user.getId());
+            userMapper.updateByExampleSelective(updateUser, example);
         }
     }
 }

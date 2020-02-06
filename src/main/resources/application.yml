@@ -16,3 +16,5 @@ githubAIP:
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: "cn.iotlearn.community.model"

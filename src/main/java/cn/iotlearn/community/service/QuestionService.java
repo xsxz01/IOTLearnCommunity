@@ -5,7 +5,10 @@ import cn.iotlearn.community.dto.QuestionDTO;
 import cn.iotlearn.community.mapper.QuestionMapper;
 import cn.iotlearn.community.mapper.UserMapper;
 import cn.iotlearn.community.model.Question;
+import cn.iotlearn.community.model.QuestionExample;
 import cn.iotlearn.community.model.User;
+import cn.iotlearn.community.model.UserExample;
+import org.apache.ibatis.session.RowBounds;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +24,9 @@ public class QuestionService {
     @Autowired
     private QuestionMapper questionMapper;
     public List<QuestionDTO> listAll() {
-        List<Question> questionList = questionMapper.listAll();
+        QuestionExample example = new QuestionExample();
+        example.setOrderByClause("gmt_create desc");
+        List<Question> questionList = questionMapper.selectByExample(example);
         return getQuestionDTOS(questionList);
     }
 
@@ -29,7 +34,7 @@ public class QuestionService {
     private List<QuestionDTO> getQuestionDTOS(List<Question> questionList) {
         List<QuestionDTO> questionDTOList = new ArrayList<>();
         for (Question question : questionList){
-            User user = userMapper.findById(question.getCreator());
+            User user = userMapper.selectByPrimaryKey(question.getCreator());
             QuestionDTO questionDTO = new QuestionDTO();
             BeanUtils.copyProperties(question,questionDTO);
             questionDTO.setUser(user);
@@ -41,8 +46,14 @@ public class QuestionService {
     private List<QuestionDTO> listByPage(String page, String size) {
         int iPage = Integer.parseInt(page);
         int iSize = Integer.parseInt(size);
-        int offset = (iPage-1)*iSize;    //计算出偏移量
-        List<Question> questionList = questionMapper.listByPage(offset,iSize);
+        int offset = (iPage-1)*iSize;   //计算出偏移量
+        questionMapper.selectByExample(new QuestionExample());
+        QuestionExample example = new QuestionExample();
+        example.setOrderByClause("gmt_create desc");
+        List<Question> questionList = questionMapper.selectByExampleWithRowbounds(
+                example,
+                new RowBounds(offset,iSize)
+        );
         return getQuestionDTOS(questionList);
     }
 
@@ -50,38 +61,63 @@ public class QuestionService {
         int iPage = Integer.parseInt(page);
         int iSize = Integer.parseInt(size);
         int offset = (iPage-1)*iSize;    //计算出偏移量
-        List<Question> questionList = questionMapper.listByUserId(id,offset,iSize);
+        QuestionExample example = new QuestionExample();
+        example.createCriteria()
+                .andCreatorEqualTo(id);
+        example.setOrderByClause("gmt_create desc");
+        List<Question> questionList = questionMapper.selectByExampleWithRowbounds(
+                example,
+                new RowBounds(offset,iSize)
+        );
         return getQuestionDTOS(questionList);
     }
 
     public PaginationDTO listByPages(String page, String size){
-        if (Integer.parseInt(page) < 1) page = "1";
-        if (Integer.parseInt(page) > questionMapper.count()/Integer.parseInt(size))
-            page = String.valueOf(questionMapper.count()/Integer.parseInt(size));
+        long questionCount = questionMapper.countByExample(new QuestionExample());
+        int iPage = Integer.parseInt(page);
+        int iSize = Integer.parseInt(size);
+        int totalPageNum = (int)Math.ceil((float)questionCount / (float)iSize);
+        if (iPage < 1) iPage = 1;
+        if (iPage > totalPageNum)
+            page = String.valueOf(iPage);
         PaginationDTO paginationDTO = new PaginationDTO();
-        Integer totalCount = questionMapper.count();
         paginationDTO.setQuestions(listByPage(page,size));
-        paginationDTO.setPageination(totalCount,page,size);
+        paginationDTO.setPageination(questionCount,page,size);
         return paginationDTO;
     }
 
     public PaginationDTO listByUserId(int id, String page, String size) {
-        if (Integer.parseInt(page) < 1) page = "1";
-        if (Integer.parseInt(page) > questionMapper.count()/Integer.parseInt(size))
-            page = String.valueOf(questionMapper.count()/Integer.parseInt(size));
+        int iPage = Integer.parseInt(page);
+        int iSize = Integer.parseInt(size);
+        QuestionExample example = new QuestionExample();
+        example.createCriteria()
+                .andCreatorEqualTo(id);
+        long questionCount = questionMapper.countByExample(example);    // 取该用户的问题总数
+        int totalPage = (int)Math.ceil((float)questionCount / (float)iSize);
+        if (iPage < 1) page = "1";
+        if (iPage > totalPage)  // 限制页码
+            page = String.valueOf(totalPage);
         PaginationDTO paginationDTO = new PaginationDTO();
-        Integer totalCount = questionMapper.countByUserId(id);
         paginationDTO.setQuestions(listById(id, page, size));
-        paginationDTO.setPageination(totalCount,page,size);
+        paginationDTO.setPageination(questionCount,page,size);
         return paginationDTO;
     }
 
     public QuestionDTO getById(Integer id) {
-        Question question = questionMapper.getById(id);
+        QuestionExample example = new QuestionExample();
+        example.createCriteria()
+                .andIdEqualTo(id);
+        example.setOrderByClause("gmt_create desc");
+        List<Question> questions = questionMapper.selectByExample(example);
+        Question question = questions.get(0);
         QuestionDTO questionDTO = new QuestionDTO();
         BeanUtils.copyProperties(question,questionDTO);
-        User userMapperById = userMapper.findById(question.getCreator());
-        questionDTO.setUser(userMapperById);
+        UserExample userExample = new UserExample();
+        userExample.createCriteria()
+                .andIdEqualTo(question.getCreator());
+        List<User> userList = userMapper.selectByExample(userExample);
+        User user = userList.get(0);
+        questionDTO.setUser(user);
         return questionDTO;
     }
 
@@ -96,8 +132,12 @@ public class QuestionService {
             questionMapper.insert(question);
         }else {
 //            更新
-            question.setGmtModified(System.currentTimeMillis());
-            questionMapper.update(question);
+            Question record = new Question();
+            QuestionExample example = new QuestionExample();
+            record.setGmtModified(System.currentTimeMillis());
+            example.createCriteria()
+                    .andIdEqualTo(question.getId());
+            questionMapper.updateByExampleSelective(record, example);
         }
     }
 }
