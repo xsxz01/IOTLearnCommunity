@@ -2,6 +2,8 @@ package cn.iotlearn.community.service;
 
 import cn.iotlearn.community.dto.PaginationDTO;
 import cn.iotlearn.community.dto.QuestionDTO;
+import cn.iotlearn.community.exception.CustomizeErrorCode;
+import cn.iotlearn.community.exception.CustomizeException;
 import cn.iotlearn.community.mapper.QuestionMapper;
 import cn.iotlearn.community.mapper.UserMapper;
 import cn.iotlearn.community.model.Question;
@@ -110,6 +112,9 @@ public class QuestionService {
         example.setOrderByClause("gmt_create desc");
         List<Question> questions = questionMapper.selectByExample(example);
         Question question = questions.get(0);
+        if (question == null){
+            throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+        }
         QuestionDTO questionDTO = new QuestionDTO();
         BeanUtils.copyProperties(question,questionDTO);
         UserExample userExample = new UserExample();
@@ -137,7 +142,10 @@ public class QuestionService {
             record.setGmtModified(System.currentTimeMillis());
             example.createCriteria()
                     .andIdEqualTo(question.getId());
-            questionMapper.updateByExampleSelective(record, example);
+            int updated = questionMapper.updateByExampleSelective(record, example);
+            if (updated != 1){
+                throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+            }
         }
     }
 }
